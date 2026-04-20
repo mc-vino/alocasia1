@@ -608,17 +608,15 @@ function openModal(d, section) {
   ];
 
   for(const s of sections) {
-    const active = s.key===section;
-    body += `<div class="modal-section${active?' ':"'}">
-      <div class="modal-section-title">${s.icon} ${s.title}</div>
-      <div class="modal-text">${d[s.key]}</div>
-    </div>`;
+    body += '<div class="modal-section">' +
+      '<div class="modal-section-title">' + s.icon + ' ' + s.title + '</div>' +
+      '<div class="modal-text">' + d[s.key] + '</div>' +
+      '</div>';
   }
 
   document.getElementById('modalBody').innerHTML = body;
   document.getElementById('modalBg').classList.add('active');
 }
-
 
 function closeModal(e){ if(e.target===document.getElementById('modalBg')) closeModalDirect(); }
 function closeModalDirect(){ document.getElementById('modalBg').classList.remove('active'); }
@@ -663,12 +661,12 @@ function render(){
     const rankCls=rank<=3?'rank-cell top3':rank<=10?'rank-cell top10':'rank-cell';
     const rankStr=rank<=3?['🥇','🥈','🥉'][rank-1]:rank;
     const mc=multColor(d.mkt_mult);
-    const key=`${d.num}-${encodeURIComponent(d.name)}`;
+    const idx=data.findIndex(x=>x.num===d.num && x.name===d.name);
 
     return `<tr>
 <td class="${rankCls}">${rankStr}</td>
 <td class="num-cell">${d.num}</td>
-<td class="c-name-td" onclick="openModal(getByKey('${d.num}','${d.name.replace(/'/g,"\\'")}'),'cv')" title="Нажмите для описания">
+<td class="c-name-td modal-trigger" data-idx="${idx}" data-section="cv" title="Нажмите для описания">
   <span class="name-text">${d.name}</span>
 </td>
 <td class="price-cell">${d.price.toFixed(2).replace('.',',')} р.</td>
@@ -681,9 +679,9 @@ function render(){
 <td class="mult-cell" style="color:${mc}">×${d.mkt_mult}</td>
 <td class="score-cell sep">${pips(d.roi,'roi')}<span class="score-num">${d.roi}/5</span></td>
 <td class="pb-cell ${pbCls(d.payback)}" title="Срок окупаемости">${d.payback} мес.</td>
-<td class="growth-cell sep" onclick="openModal(getByKey('${d.num}','${d.name.replace(/'/g,"\\'")}'),'cg')" title="Нажмите для деталей роста" style="cursor:pointer">${growBar(d.growth)}</td>
+<td class="growth-cell modal-trigger sep" data-idx="${idx}" data-section="cg" title="Нажмите для деталей роста">${growBar(d.growth)}</td>
 <td class="score-cell"><span class="size-badge">${sizeLabels[d.size]}</span></td>
-<td class="care-cell" onclick="openModal(getByKey('${d.num}','${d.name.replace(/'/g,"\\'")}'),'cc')" title="Нажмите для деталей ухода"><span class="care-badge care-${d.care}">${careLabels[d.care]}</span></td>
+<td class="care-cell modal-trigger" data-idx="${idx}" data-section="cc" title="Нажмите для деталей ухода"><span class="care-badge care-${d.care}">${careLabels[d.care]}</span></td>
 <td class="total-cell ${tCls(d.total)} sep">${d.total}<span style="font-size:9px;color:var(--muted)">/30</span></td>
 </tr>`;
   }).join('');
@@ -697,7 +695,14 @@ function render(){
   if(st){ st.classList.add('sorted'); const si=st.querySelector('.sort-icon'); if(si) si.textContent=sortDir==='desc'?'↓':'↑'; }
 }
 
-function getByKey(num, name){ return data.find(d=>d.num==num && d.name===name); }
+
+document.getElementById('tbody').addEventListener('click', e => {
+  const trigger = e.target.closest('.modal-trigger');
+  if (!trigger) return;
+  const idx = parseInt(trigger.dataset.idx);
+  const section = trigger.dataset.section || 'cv';
+  if (!isNaN(idx) && data[idx]) openModal(data[idx], section);
+});
 
 document.getElementById('sortCol').addEventListener('change',e=>{sortCol=e.target.value;render();});
 document.getElementById('sortDir').addEventListener('change',e=>{sortDir=e.target.value;render();});
