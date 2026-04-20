@@ -5,382 +5,290 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Анализ алоказий — Закупка Апрель</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg: #0e0f0f;
-  --surface: #181a1a;
-  --surface2: #202323;
-  --border: #2c3030;
-  --accent: #c8a96e;
-  --accent2: #7db88a;
-  --accent3: #6ba3d6;
-  --text: #f0ede6;
-  --text2: #c8c4bc;
-  --muted: #7a7a72;
-  --danger: #d97070;
-  --header-height: 56px;
-  --controls-height: 46px;
-  --legend-height: 36px;
-  --sticky-top: 138px; /* header+controls+legend */
-}
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { background: var(--bg); color: var(--text); font-family: 'IBM Plex Sans', sans-serif; font-size: 13px; min-height: 100vh; }
+*{box-sizing:border-box;margin:0;padding:0}
 
-/* ── STICKY PANELS ── */
-.sticky-top {
-position: sticky;
-top: 0;
-z-index: 200;
-background: var(–surface);
-}
-header {
-border-bottom: 1px solid var(–border);
-padding: 14px 24px 12px;
-height: var(–header-height);
-display: flex; align-items: center; gap: 16px;
-}
-header h1 { font-family: ‘Playfair Display’, serif; font-size: 20px; font-weight: 600; color: var(–accent); white-space: nowrap; }
-header .sub { color: var(–muted); font-size: 10.5px; font-family: ‘IBM Plex Mono’, monospace; }
-
-.controls {
-border-bottom: 1px solid var(–border);
-padding: 8px 24px;
-height: var(–controls-height);
-display: flex; flex-wrap: nowrap; gap: 6px; align-items: center;
-overflow-x: auto;
-}
-.controls label { font-size: 10px; color: var(–muted); text-transform: uppercase; letter-spacing: .8px; white-space: nowrap; }
-select, input[type=text] {
-background: var(–surface2); border: 1px solid var(–border); color: var(–text);
-padding: 4px 8px; border-radius: 4px; font-family: ‘IBM Plex Sans’, sans-serif;
-font-size: 11px; outline: none; cursor: pointer; white-space: nowrap;
-}
-select:focus, input[type=text]:focus { border-color: var(–accent); }
-input[type=text] { width: 170px; }
-.fg { display: flex; align-items: center; gap: 4px; }
-.count-badge { font-family: ‘IBM Plex Mono’, monospace; font-size: 11px; color: var(–muted); margin-left: auto; white-space: nowrap; }
-
-.legend {
-background: #131515;
-border-bottom: 1px solid var(–border);
-padding: 7px 24px;
-height: var(–legend-height);
-display: flex; gap: 16px; align-items: center;
-font-size: 10.5px; color: var(–muted);
-overflow-x: auto;
-}
-.legend-item { display: flex; align-items: center; gap: 4px; white-space: nowrap; }
-.dot { width: 8px; height: 8px; border-radius: 50%; }
-.dot-5 { background: var(–accent2); }
-.dot-4 { background: #a8c870; }
-.dot-3 { background: var(–accent); }
-.dot-2 { background: #d49050; }
-.dot-1 { background: var(–danger); }
-
-/* ── TABLE ── */
-.table-wrapper { overflow-x: auto; padding: 0 24px 48px; }
-
-table {
-width: max-content;
-min-width: 100%;
-border-collapse: separate;
-border-spacing: 0;
-margin-top: 12px;
-table-layout: fixed;
+:root{
+/* backgrounds */
+–bg:       #f4f5f3;
+–header:   #2d3a2e;
+–thead:    #3a4a3b;
+–row-even: #ffffff;
+–row-odd:  #f9faf8;
+–row-hover:#e8ede8;
+–modal-bg: #f0f2ef;
+–card:     #ffffff;
+/* borders */
+–bdr:      #d0d5ce;
+–bdr-sep:  #b0b8ae;
+/* text */
+–tx-main:  #111612;
+–tx-sub:   #3a4238;
+–tx-muted: #7a8578;
+–tx-head:  #e8ede3;
+–tx-thead: #d8e0d2;
+/* accents — adjusted for light bg */
+–acc:      #7a5c1e;   /* amber-brown */
+–grn:      #2d6e3a;   /* forest green */
+–blu:      #2256a0;   /* dark blue */
+–red:      #b02020;   /* dark red */
+–ora:      #8a4400;   /* orange-brown */
+/* pip colors */
+–p5: #2d6e3a;
+–p4: #5a8c2a;
+–p3: #9c7a10;
+–p2: #b05018;
+–p1: #b02020;
 }
 
-/* Fixed column widths */
-col.c-rank  { width: 34px; }
-col.c-num   { width: 42px; }
-col.c-name  { width: 260px; }
-col.c-price { width: 80px; }
-col.c-vr    { width: 60px; }
-col.c-dem   { width: 60px; }
-col.c-rar   { width: 60px; }
-col.c-mkt   { width: 60px; }
-col.c-byn   { width: 100px; }
-col.c-rub   { width: 90px; }
-col.c-mult  { width: 48px; }
-col.c-roi   { width: 60px; }
-col.c-pb    { width: 74px; }
-col.c-grw   { width: 130px; }
-col.c-sz    { width: 110px; }
-col.c-care  { width: 90px; }
-col.c-total { width: 60px; }
+body{background:var(–bg);color:var(–tx-main);font-family:system-ui,-apple-system,‘Segoe UI’,sans-serif;font-size:13px;min-height:100vh}
 
-thead th {
-background: var(–surface);
-border-bottom: 2px solid var(–border);
-border-right: 1px solid #222626;
-padding: 9px 7px;
-text-align: left;
-font-family: ‘IBM Plex Mono’, monospace;
-font-size: 9px;
-font-weight: 500;
-color: var(–muted);
-text-transform: uppercase;
-letter-spacing: .6px;
-white-space: nowrap;
-cursor: pointer;
-user-select: none;
-transition: color .15s;
-position: sticky;
-top: var(–sticky-top);
-z-index: 10;
-overflow: hidden;
-text-overflow: ellipsis;
-vertical-align: bottom;
+/* ── STICKY TOPBAR ── */
+#topbar{position:sticky;top:0;z-index:200;background:var(–header);box-shadow:0 2px 8px rgba(0,0,0,.25)}
+
+/* ── HEADER ── */
+#header{padding:11px 20px 10px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;border-bottom:1px solid rgba(255,255,255,.1)}
+#header h1{font-size:18px;font-weight:700;color:#e8c96a;white-space:nowrap}
+#header .sub{color:#a8b8a0;font-size:10px;font-family:monospace}
+
+/* ── CONTROLS ── */
+#controls{padding:7px 20px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;border-bottom:1px solid rgba(255,255,255,.08)}
+#controls label{font-size:10px;color:#a0b098;text-transform:uppercase;letter-spacing:.7px;white-space:nowrap}
+select,input[type=text]{
+background:#3e5040;border:1px solid #506050;color:#e8ede3;
+padding:4px 8px;border-radius:4px;font-family:inherit;font-size:11px;outline:none;cursor:pointer
 }
-thead th:hover { color: var(–accent); }
-thead th.sorted { color: var(–accent); background: #1c1f1f; }
-.sort-icon { display: inline-block; margin-left: 2px; opacity: .4; font-size: 8px; }
-thead th.sorted .sort-icon { opacity: 1; }
+select:focus,input[type=text]:focus{border-color:#e8c96a}
+input[type=text]{width:160px}
+.fg{display:flex;align-items:center;gap:4px}
+#countBadge{font-family:monospace;font-size:11px;color:#8aa090;margin-left:auto;white-space:nowrap}
 
-/* sep lines between groups */
-thead th.sep, td.sep { border-left: 2px solid #2c3434 !important; }
+/* ── LEGEND ── */
+#legend{padding:5px 20px;display:flex;gap:14px;align-items:center;flex-wrap:wrap;font-size:10px;color:#90a890;border-bottom:1px solid rgba(255,255,255,.06)}
+.li{display:flex;align-items:center;gap:4px;white-space:nowrap}
+.dot{width:7px;height:7px;border-radius:50%}
+.d5{background:#4aaa60}.d4{background:#88bb44}.d3{background:#c8a030}.d2{background:#cc6020}.d1{background:#cc3030}
 
-tbody tr { transition: background .08s; }
-tbody tr:hover { background: var(–surface2); }
-tbody tr:nth-child(even) { background: rgba(255,255,255,.012); }
-tbody tr:nth-child(even):hover { background: var(–surface2); }
+/* ── TABLE WRAPPER ── */
+#twrap{overflow-x:auto;padding:0 20px 60px}
 
-td {
-padding: 7px 7px;
-vertical-align: middle;
-border-bottom: 1px solid #1e2222;
-border-right: 1px solid #1a1d1d;
-overflow: hidden;
-text-overflow: ellipsis;
-white-space: nowrap;
+table{border-collapse:collapse;margin-top:12px;table-layout:fixed;width:max-content;min-width:100%}
+
+col.cr{width:34px}col.cn{width:42px}col.cname{width:265px}col.cprice{width:80px}
+col.cvr{width:60px}col.cdem{width:60px}col.crar{width:60px}col.cmkt{width:60px}
+col.cbyn{width:100px}col.crub{width:90px}col.cmult{width:48px}
+col.croi{width:60px}col.cpb{width:74px}
+col.cgrw{width:132px}col.csz{width:110px}col.ccare{width:92px}
+col.ctotal{width:58px}
+
+/* ── THEAD ── */
+thead th{
+background:var(–thead);
+color:var(–tx-thead);
+padding:9px 7px;
+text-align:left;
+font-family:monospace;font-size:9px;font-weight:700;
+text-transform:uppercase;letter-spacing:.6px;
+white-space:nowrap;
+cursor:pointer;user-select:none;
+border-bottom:2px solid #2a3a2b;
+border-right:1px solid #304030;
+overflow:hidden;text-overflow:ellipsis;vertical-align:bottom;
 }
-td.c-name-td {
-white-space: normal;
-word-break: break-word;
-line-height: 1.35;
-cursor: pointer;
+thead th:hover{color:#e8c96a;background:#445045}
+thead th.sorted{color:#e8c96a;background:#404e41}
+.si{display:inline-block;margin-left:2px;opacity:.4;font-size:8px}
+thead th.sorted .si{opacity:1}
+thead th.sep{border-left:2px solid #253525}
+td.sep{border-left:2px solid var(–bdr-sep)}
+
+/* ── TBODY ── */
+tbody tr{background:var(–row-odd)}
+tbody tr:nth-child(even){background:var(–row-even)}
+tbody tr:hover{background:var(–row-hover)}
+
+td{
+padding:7px 7px;vertical-align:middle;
+border-bottom:1px solid var(–bdr);
+border-right:1px solid #dde0da;
+overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+color:var(–tx-main);
 }
-td.c-name-td:hover .name-text { color: var(–accent); text-decoration: underline; }
 
-.name-text { font-size: 12.5px; font-weight: 500; color: #f5f2ea; letter-spacing: .1px; }
+/* ── NAME CELL ── */
+td.cname-td{white-space:normal;word-break:break-word;line-height:1.4;cursor:pointer}
+td.cname-td:hover .nm{color:var(–acc);text-decoration:underline}
+.nm{font-size:13px;font-weight:700;color:var(–tx-main);letter-spacing:.05px}
 
-.num-cell  { font-family: ‘IBM Plex Mono’, monospace; color: var(–muted); font-size: 10px; }
-.rank-cell { font-family: ‘IBM Plex Mono’, monospace; font-size: 11px; color: var(–muted); text-align: center; font-weight: 600; }
-.rank-cell.top3  { color: var(–accent); font-size: 13px; }
-.rank-cell.top10 { color: var(–accent2); }
-
-.price-cell { font-family: ‘IBM Plex Mono’, monospace; font-size: 11px; font-weight: 500; color: var(–accent); text-align: right; }
-
-.score-cell { text-align: center; }
-.pips { display: inline-flex; gap: 2px; align-items: center; }
-.pip { width: 5px; height: 5px; border-radius: 50%; background: #333; }
-.pip.c5 { background: var(–accent2); }
-.pip.c4 { background: #a8c870; }
-.pip.c3 { background: var(–accent); }
-.pip.c2 { background: #d49050; }
-.pip.c1 { background: var(–danger); }
-.score-num { font-family: ‘IBM Plex Mono’, monospace; font-size: 9px; color: var(–muted); display: block; margin-top: 1px; text-align: center; }
-
-.mkt-byn-cell { font-family: ‘IBM Plex Mono’, monospace; font-size: 11px; font-weight: 600; color: var(–accent2); text-align: right; }
-.mkt-rub-cell { font-family: ‘IBM Plex Mono’, monospace; font-size: 11px; color: #6a9ab8; text-align: right; }
-.mult-cell { font-family: ‘IBM Plex Mono’, monospace; font-size: 11px; font-weight: 700; text-align: center; }
-
-.pb-cell { font-family: ‘IBM Plex Mono’, monospace; font-size: 11px; font-weight: 700; text-align: center; cursor: pointer; }
-.pb-fast { color: var(–accent2); }
-.pb-mid  { color: var(–accent); }
-.pb-slow { color: var(–danger); }
-
-.growth-cell { cursor: pointer; }
-.gbar { display: inline-flex; gap: 2px; align-items: flex-end; }
-.gb { border-radius: 2px; background: #333; width: 5px; }
-.gb:nth-child(1){height:5px} .gb:nth-child(2){height:8px} .gb:nth-child(3){height:11px} .gb:nth-child(4){height:14px} .gb:nth-child(5){height:17px}
-.gb.gon-fast  { background: var(–accent2); }
-.gb.gon-mid   { background: var(–accent); }
-.gb.gon-slow  { background: var(–danger); }
-.glabel { font-size: 9.5px; color: var(–muted); margin-left: 5px; vertical-align: middle; }
-
-.size-badge { display: inline-block; padding: 1px 5px; border-radius: 3px; font-size: 9.5px; font-family: ‘IBM Plex Mono’, monospace; background: rgba(107,163,214,.12); color: var(–accent3); }
-
-.care-cell { cursor: pointer; }
-.care-badge { display: inline-block; padding: 1px 5px; border-radius: 3px; font-size: 9.5px; font-family: ‘IBM Plex Mono’, monospace; font-weight: 500; }
-.care-1 { background: rgba(109,210,120,.15); color: #6dd278; }
-.care-2 { background: rgba(168,200,112,.15); color: #a8c870; }
-.care-3 { background: rgba(200,169,110,.15); color: var(–accent); }
-.care-4 { background: rgba(212,144,80,.15); color: #d49050; }
-.care-5 { background: rgba(217,112,112,.15); color: var(–danger); }
-
-.total-cell { font-family: ‘IBM Plex Mono’, monospace; font-weight: 700; font-size: 13px; text-align: center; }
-.t-high { color: var(–accent2); }
-.t-mid  { color: var(–accent); }
-.t-low  { color: var(–danger); }
+/* ── CELLS ── */
+.rc{font-family:monospace;font-size:11px;color:var(–tx-muted);text-align:center;font-weight:700}
+.rc.t3{color:#7a5000;font-size:13px}.rc.t10{color:var(–grn)}
+.nc{font-family:monospace;color:var(–tx-muted);font-size:10px}
+.pc{font-family:monospace;font-size:11px;font-weight:700;color:var(–acc);text-align:right}
+.sc{text-align:center}
+.pips{display:inline-flex;gap:2px;align-items:center}
+.pip{width:5px;height:5px;border-radius:50%;background:#d0d5ce}
+.pip.c5{background:var(–p5)}.pip.c4{background:var(–p4)}.pip.c3{background:var(–p3)}.pip.c2{background:var(–p2)}.pip.c1{background:var(–p1)}
+.sn{font-family:monospace;font-size:9px;color:var(–tx-muted);display:block;margin-top:1px;text-align:center}
+.bync{font-family:monospace;font-size:11px;font-weight:700;color:var(–grn);text-align:right}
+.rubc{font-family:monospace;font-size:11px;color:var(–blu);text-align:right}
+.mc{font-family:monospace;font-size:11px;font-weight:700;text-align:center}
+.pbc{font-family:monospace;font-size:11px;font-weight:700;text-align:center}
+.pbf{color:var(–grn)}.pbm{color:var(–ora)}.pbs{color:var(–red)}
+.gcell{cursor:pointer}
+.gbar{display:inline-flex;gap:2px;align-items:flex-end}
+.gb{border-radius:2px;background:#cdd2cc;width:5px}
+.gb:nth-child(1){height:5px}.gb:nth-child(2){height:8px}.gb:nth-child(3){height:11px}.gb:nth-child(4){height:14px}.gb:nth-child(5){height:17px}
+.gf{background:var(–p5)}.gm{background:var(–p3)}.gs{background:var(–p1)}
+.gl{font-size:9.5px;color:var(–tx-muted);margin-left:5px;vertical-align:middle}
+.sbadge{display:inline-block;padding:1px 6px;border-radius:3px;font-size:9.5px;font-family:monospace;background:#dde8f4;color:var(–blu);font-weight:600}
+.care-c{cursor:pointer}
+.cbadge{display:inline-block;padding:1px 6px;border-radius:3px;font-size:9.5px;font-family:monospace;font-weight:700}
+.cb1{background:#d4f0d8;color:#1a5e28}
+.cb2{background:#e0f0c8;color:#3a6010}
+.cb3{background:#fdf0cc;color:#7a5800}
+.cb4{background:#ffe0c0;color:#8a3800}
+.cb5{background:#ffd0d0;color:#8a1010}
+.tc{font-family:monospace;font-weight:800;font-size:13px;text-align:center}
+.th{color:var(–grn)}.tm{color:var(–acc)}.tl{color:var(–red)}
 
 /* ── MODAL ── */
-.modal-bg {
-display: none;
-position: fixed; inset: 0;
-background: rgba(0,0,0,.72);
-z-index: 1000;
-align-items: center;
-justify-content: center;
-padding: 20px;
-}
-.modal-bg.active { display: flex; }
-.modal {
-background: #1a1d1d;
-border: 1px solid #2f3636;
-border-radius: 8px;
-max-width: 520px;
-width: 100%;
-max-height: 80vh;
-overflow-y: auto;
-box-shadow: 0 20px 60px rgba(0,0,0,.7);
-animation: modalIn .15s ease;
-}
-@keyframes modalIn { from { opacity:0; transform:translateY(-10px) scale(.97); } to { opacity:1; transform:none; } }
-.modal-header {
-padding: 16px 20px 12px;
-border-bottom: 1px solid #2a2e2e;
-display: flex; justify-content: space-between; align-items: flex-start; gap: 12px;
-}
-.modal-title { font-family: ‘Playfair Display’, serif; font-size: 15px; font-weight: 600; color: var(–accent); line-height: 1.3; }
-.modal-close { background: none; border: none; color: var(–muted); cursor: pointer; font-size: 18px; line-height: 1; flex-shrink: 0; padding: 2px; }
-.modal-close:hover { color: var(–text); }
-.modal-body { padding: 16px 20px 20px; }
-.modal-section { margin-bottom: 16px; }
-.modal-section:last-child { margin-bottom: 0; }
-.modal-section-title {
-font-family: ‘IBM Plex Mono’, monospace;
-font-size: 9px;
-text-transform: uppercase;
-letter-spacing: 1px;
-color: var(–muted);
-margin-bottom: 6px;
-display: flex; align-items: center; gap: 6px;
-}
-.modal-section-title::after { content: ‘’; flex: 1; height: 1px; background: #2a2e2e; }
-.modal-text { font-size: 12.5px; line-height: 1.65; color: var(–text2); }
-.modal-badge { display: inline-flex; align-items: center; gap: 6px; background: var(–surface2); border: 1px solid var(–border); border-radius: 4px; padding: 4px 10px; margin-bottom: 10px; }
-.modal-price { font-family: ‘IBM Plex Mono’, monospace; font-size: 11px; color: var(–accent); }
-.modal-market { font-family: ‘IBM Plex Mono’, monospace; font-size: 11px; }
+#mbg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:center;justify-content:center;padding:16px}
+#mbg.on{display:flex}
+#modal{background:var(–modal-bg);border:1px solid var(–bdr);border-radius:10px;max-width:500px;width:100%;max-height:82vh;overflow-y:auto;box-shadow:0 16px 48px rgba(0,0,0,.3);animation:mi .14s ease}
+@keyframes mi{from{opacity:0;transform:translateY(-8px) scale(.97)}to{opacity:1;transform:none}}
+#mhdr{padding:14px 18px 11px;border-bottom:1px solid var(–bdr);display:flex;justify-content:space-between;align-items:flex-start;gap:10px;background:#e8ede5;border-radius:10px 10px 0 0}
+#mtitle{font-size:15px;font-weight:700;color:var(–tx-main);line-height:1.3}
+#mclose{background:none;border:none;color:var(–tx-muted);cursor:pointer;font-size:20px;line-height:1;padding:2px;flex-shrink:0}
+#mclose:hover{color:var(–tx-main)}
+#mbody{padding:14px 18px 18px;background:var(–modal-bg)}
+.msec{margin-bottom:14px}
+.msec:last-child{margin-bottom:0}
+.mstitle{font-family:monospace;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(–tx-muted);margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.mstitle::after{content:’’;flex:1;height:1px;background:var(–bdr)}
+.mtext{font-size:13px;line-height:1.7;color:var(–tx-sub)}
+.mbadge{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.mbadge span{font-family:monospace;font-size:11px;font-weight:600;background:#ffffff;border:1px solid var(–bdr);border-radius:4px;padding:3px 9px}
 
-.no-results { text-align: center; padding: 48px; color: var(–muted); font-family: ‘IBM Plex Mono’, monospace; font-size: 13px; }
+.nores{text-align:center;padding:48px;color:var(–tx-muted);font-family:monospace;font-size:13px}
 
-::-webkit-scrollbar { width: 5px; height: 5px; }
-::-webkit-scrollbar-track { background: var(–bg); }
-::-webkit-scrollbar-thumb { background: var(–border); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: var(–accent); }
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:var(–bg)}
+::-webkit-scrollbar-thumb{background:#c0c8bc;border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:#96a090}
 </style>
 
 </head>
 <body>
 
-<div class="sticky-top">
-<header>
-  <h1>🌿 Алоказии — Закупка Апрель</h1>
-  <div class="sub">170 позиций · Меристемные клоны · BYN · Кликните на название, темп роста или уход для деталей</div>
-</header>
-<div class="controls">
-  <div class="fg"><label>Сорт:</label>
-    <select id="sortCol">
-      <option value="total">Итог</option>
-      <option value="name">Название</option>
-      <option value="price">Цена клона</option>
-      <option value="value_ratio">Цена/кач.</option>
-      <option value="demand">Спрос</option>
-      <option value="rarity">Редкость</option>
-      <option value="market_price">Рынок ★</option>
-      <option value="mkt_byn">Рынок BYN</option>
-      <option value="mkt_rub">Рынок RUB</option>
-      <option value="mkt_mult">Множитель ×</option>
-      <option value="roi">Окуп. ★</option>
-      <option value="payback">Срок окуп.</option>
-      <option value="growth">Темп роста</option>
-      <option value="size">Размер</option>
-      <option value="care">Уход (сложность)</option>
-      <option value="num">№</option>
-    </select>
+<div id="topbar">
+  <div id="header">
+    <h1>🌿 Алоказии — Закупка Апрель</h1>
+    <div class="sub">170 позиций · Меристемные клоны · Нажмите на название / темп роста / уход для деталей</div>
   </div>
-  <div class="fg"><label>Порядок:</label>
-    <select id="sortDir">
-      <option value="desc">↓ Лучшие первые</option>
-      <option value="asc">↑ Худшие первые</option>
-    </select>
+  <div id="controls">
+    <div class="fg"><label>Сорт:</label>
+      <select id="sortCol">
+        <option value="total">Итог</option>
+        <option value="name">Название</option>
+        <option value="price">Цена клона</option>
+        <option value="value_ratio">Цена/кач.</option>
+        <option value="demand">Спрос</option>
+        <option value="rarity">Редкость</option>
+        <option value="market_price">Рынок ★</option>
+        <option value="mkt_byn">Рынок BYN</option>
+        <option value="mkt_rub">Рынок RUB</option>
+        <option value="mkt_mult">Множитель ×</option>
+        <option value="roi">Окуп. ★</option>
+        <option value="payback">Срок окупаемости</option>
+        <option value="growth">Темп роста</option>
+        <option value="size">Размер</option>
+        <option value="care">Уход (сложность)</option>
+        <option value="num">№</option>
+      </select>
+    </div>
+    <div class="fg"><label>Порядок:</label>
+      <select id="sortDir">
+        <option value="desc">↓ Лучшие первые</option>
+        <option value="asc">↑ Худшие первые</option>
+      </select>
+    </div>
+    <div class="fg"><label>Поиск:</label>
+      <input type="text" id="search" placeholder="Название...">
+    </div>
+    <div class="fg"><label>Фильтр:</label>
+      <select id="filterType">
+        <option value="all">Все</option>
+        <option value="variegated">Вариегатные</option>
+        <option value="species">Видовые</option>
+        <option value="top20">Топ-20</option>
+        <option value="highprice">&gt;400 BYN</option>
+        <option value="budget">≤100 BYN</option>
+        <option value="fastpayback">Окуп. ≤6 мес.</option>
+      </select>
+    </div>
+    <div id="countBadge">170 позиций</div>
   </div>
-  <div class="fg"><label>Поиск:</label>
-    <input type="text" id="search" placeholder="Название...">
+  <div id="legend">
+    <span>Оценки:</span>
+    <div class="li"><div class="dot d5"></div>5 Отлично</div>
+    <div class="li"><div class="dot d4"></div>4 Хорошо</div>
+    <div class="li"><div class="dot d3"></div>3 Средне</div>
+    <div class="li"><div class="dot d2"></div>2 Слабо</div>
+    <div class="li"><div class="dot d1"></div>1 Плохо</div>
+    <span style="margin-left:6px">Окуп: <span style="color:#6acc80">зел ≤6м</span> <span style="color:#e8c060">жёл 7–12м</span> <span style="color:#ff8080">кр &gt;12м</span></span>
+    <span style="margin-left:auto;font-size:9.5px">× = рынок÷клон · итог макс 30</span>
   </div>
-  <div class="fg"><label>Фильтр:</label>
-    <select id="filterType">
-      <option value="all">Все</option>
-      <option value="variegated">Вариегатные</option>
-      <option value="species">Видовые</option>
-      <option value="top20">Топ-20</option>
-      <option value="highprice">&gt;400 BYN</option>
-      <option value="budget">≤100 BYN</option>
-      <option value="fastpayback">Окуп. ≤6 мес.</option>
-    </select>
-  </div>
-  <div class="count-badge" id="countBadge">170 позиций</div>
 </div>
-<div class="legend">
-  <span>Оценки:</span>
-  <div class="legend-item"><div class="dot dot-5"></div>5 Отлично</div>
-  <div class="legend-item"><div class="dot dot-4"></div>4 Хорошо</div>
-  <div class="legend-item"><div class="dot dot-3"></div>3 Средне</div>
-  <div class="legend-item"><div class="dot dot-2"></div>2 Слабо</div>
-  <div class="legend-item"><div class="dot dot-1"></div>1 Плохо</div>
-  <span style="margin-left:8px">Окуп: <span style="color:var(--accent2)">зел ≤6м</span> <span style="color:var(--accent)">жёл 7–12м</span> <span style="color:var(--danger)">кр &gt;12м</span></span>
-  <span style="margin-left:auto;font-size:10px">× = рынок BYN ÷ цена клона · итог макс 30</span>
-</div>
-</div><!-- /sticky-top -->
 
-<div class="table-wrapper">
-<table>
+<div id="twrap">
+<table id="tbl">
 <colgroup>
-  <col class="c-rank"><col class="c-num"><col class="c-name"><col class="c-price">
-  <col class="c-vr"><col class="c-dem"><col class="c-rar"><col class="c-mkt">
-  <col class="c-byn"><col class="c-rub"><col class="c-mult">
-  <col class="c-roi"><col class="c-pb">
-  <col class="c-grw"><col class="c-sz"><col class="c-care">
-  <col class="c-total">
+  <col class="cr"><col class="cn"><col class="cname"><col class="cprice">
+  <col class="cvr"><col class="cdem"><col class="crar"><col class="cmkt">
+  <col class="cbyn"><col class="crub"><col class="cmult">
+  <col class="croi"><col class="cpb">
+  <col class="cgrw"><col class="csz"><col class="ccare">
+  <col class="ctotal">
 </colgroup>
 <thead><tr>
   <th data-col="rank">#</th>
-  <th data-col="num">№<span class="sort-icon">↕</span></th>
-  <th data-col="name">Название<span class="sort-icon">↕</span></th>
-  <th data-col="price">Клон BYN<span class="sort-icon">↕</span></th>
-  <th data-col="value_ratio" class="sep" title="Цена клона vs ценность сорта. 5=недооценён">Цена/кач<span class="sort-icon">↕</span></th>
-  <th data-col="demand" title="Востребованность РБ/РФ">Спрос<span class="sort-icon">↕</span></th>
-  <th data-col="rarity" title="Редкость на рынке">Редкость<span class="sort-icon">↕</span></th>
-  <th data-col="market_price" title="Уровень рыночных цен туберов">Рынок★<span class="sort-icon">↕</span></th>
-  <th data-col="mkt_byn" class="sep" title="Рыночная цена тубера/детки BYN">Тубер BYN<span class="sort-icon">↕</span></th>
-  <th data-col="mkt_rub" title="Рыночная цена тубера/детки RUB">Тубер RUB<span class="sort-icon">↕</span></th>
-  <th data-col="mkt_mult" title="Рынок BYN ÷ цена клона">×<span class="sort-icon">↕</span></th>
-  <th data-col="roi" class="sep" title="Потенциал окупаемости">Окуп★<span class="sort-icon">↕</span></th>
-  <th data-col="payback" title="Срок окупаемости в месяцах">Срок<span class="sort-icon">↕</span></th>
-  <th data-col="growth" class="sep" title="Кликните на строку для деталей">Темп роста↗<span class="sort-icon">↕</span></th>
-  <th data-col="size" title="Размер взрослого растения">Размер<span class="sort-icon">↕</span></th>
-  <th data-col="care" title="Кликните на строку для деталей. 1=просто, 5=сложно">Уход↗<span class="sort-icon">↕</span></th>
-  <th data-col="total" class="sep" title="Итог = сумма баллов − сложность">Итог<span class="sort-icon">↕</span></th>
+  <th data-col="num">№<span class="si">↕</span></th>
+  <th data-col="name">Название<span class="si">↕</span></th>
+  <th data-col="price">Клон BYN<span class="si">↕</span></th>
+  <th data-col="value_ratio" class="sep" title="Цена клона vs ценность сорта">Цена/кач<span class="si">↕</span></th>
+  <th data-col="demand" title="Востребованность РБ/РФ">Спрос<span class="si">↕</span></th>
+  <th data-col="rarity" title="Редкость на рынке">Редкость<span class="si">↕</span></th>
+  <th data-col="market_price" title="Уровень рыночных цен">Рынок★<span class="si">↕</span></th>
+  <th data-col="mkt_byn" class="sep" title="Цена тубера/детки BYN">Тубер BYN<span class="si">↕</span></th>
+  <th data-col="mkt_rub" title="Цена тубера/детки RUB">Тубер RUB<span class="si">↕</span></th>
+  <th data-col="mkt_mult" title="Рынок BYN ÷ цена клона">×<span class="si">↕</span></th>
+  <th data-col="roi" class="sep" title="Потенциал окупаемости">Окуп★<span class="si">↕</span></th>
+  <th data-col="payback" title="Срок окупаемости мес.">Срок<span class="si">↕</span></th>
+  <th data-col="growth" class="sep" title="Нажмите строку для деталей">Темп↗<span class="si">↕</span></th>
+  <th data-col="size">Размер<span class="si">↕</span></th>
+  <th data-col="care" title="Нажмите строку для деталей">Уход↗<span class="si">↕</span></th>
+  <th data-col="total" class="sep" title="Итог = сумма баллов − сложность">Итог<span class="si">↕</span></th>
 </tr></thead>
 <tbody id="tbody"></tbody>
 </table>
-<div id="noResults" class="no-results" style="display:none">Ничего не найдено</div>
+<div id="nores" class="nores" style="display:none">Ничего не найдено</div>
 </div>
 
 <!-- MODAL -->
 
-<div class="modal-bg" id="modalBg" onclick="closeModal(event)">
-  <div class="modal" id="modal">
-    <div class="modal-header">
-      <div class="modal-title" id="modalTitle"></div>
-      <button class="modal-close" onclick="closeModalDirect()">✕</button>
+<div id="mbg" onclick="closeMBg(event)">
+  <div id="modal">
+    <div id="mhdr">
+      <div id="mtitle"></div>
+      <button id="mclose" onclick="closeM()">✕</button>
     </div>
-    <div class="modal-body" id="modalBody"></div>
+    <div id="mbody"></div>
   </div>
 </div>
 
 <script>
+// ── DATA ──
 const data = [
   {num:132, name:"Alocasia Aegis Variegated", price:540, value_ratio:3, demand:3, rarity:4, market_price:4, roi:3, size:2, care:4, mkt_byn:205, mkt_rub:6200, growth:2, payback:18, cv:"Редкий гибрид с необычной формой листа. Вариегатность нестабильна — часть листьев может ревертировать. Ценится коллекционерами, но широкого рынка нет.", cg:"Растёт медленно. Новый лист — раз в 1.5–2 месяца. Детки даёт редко, что сдерживает размножение.", cc:"Требует высокой влажности (70%+), рассеянного света. Чувствителен к пересыханию субстрата и сквознякам. Нужен тёплый стабильный микроклимат."},
   {num:133, name:"Alocasia Antoro Velvet", price:14.5, value_ratio:4, demand:3, rarity:3, market_price:3, roi:4, size:2, care:3, mkt_byn:400, mkt_rub:420, growth:3, payback:4, cv:"Бархатистая текстура листа, мягкий зелёный тон. Интересный видовой экземпляр, спрос умеренный. Цена клона очень привлекательна.", cg:"Средний темп роста. Лист раз в 4–6 недель. Периодически даёт боковые побеги.", cc:"Средние требования. Не любит прямое солнце и переувлажнение. Влажность 55–65% достаточна."},
@@ -554,170 +462,163 @@ const data = [
   {num:301, name:"Alocasia Zebrina Yellow Variegated", price:150, value_ratio:4, demand:4, rarity:3, market_price:3, roi:4, size:3, care:3, mkt_byn:700, mkt_rub:2400, growth:3, payback:8, cv:"Жёлтая вариегатная Zebrina. Хороший спрос, разумная цена клона.", cg:"Средний рост, Zebrina активна.", cc:"Умеренные требования."}
 ];
 
-
-// compute derived
-data.forEach(d => {
+// ── DERIVED ──
+data.forEach(function(d){
   d.total = d.value_ratio + d.demand + d.rarity + d.market_price + d.roi + d.growth + (6 - d.care);
-  d.mkt_mult = +(d.mkt_byn / d.price).toFixed(1);
+  d.mkt_mult = Math.round(d.mkt_byn / d.price * 10) / 10;
 });
 
-const sizeLabels  = {1:'Мини <30см',2:'Средний 30–80',3:'Крупный 80–150',4:'Гигант 150см+'};
-const careLabels  = {1:'Очень просто',2:'Просто',3:'Средне',4:'Сложно',5:'Оч. сложно'};
-const growLabels  = {1:'Оч. медленный',2:'Медленный',3:'Средний',4:'Быстрый',5:'Оч. быстрый'};
+// ── LABELS ──
+var SZ={1:'Мини <30см',2:'Средний 30–80',3:'Крупный 80–150',4:'Гигант 150см+'};
+var CA={1:'Очень просто',2:'Просто',3:'Средне',4:'Сложно',5:'Оч. сложно'};
+var GR={1:'Оч. медленный',2:'Медленный',3:'Средний',4:'Быстрый',5:'Оч. быстрый'};
 
-function pips(val, col) {
-  let cls;
-  if (col==='care'){ const v=6-val; cls=v>=5?'c5':v===4?'c4':v===3?'c3':v===2?'c2':'c1'; }
-  else { cls=val===5?'c5':val===4?'c4':val===3?'c3':val===2?'c2':'c1'; }
-  let h='<div class="pips">';
-  for(let i=1;i<=5;i++) h+=`<span class="pip ${i<=val?cls:''}"></span>`;
+// ── HELPERS ──
+function pips(val){
+  var cls=val===5?'c5':val===4?'c4':val===3?'c3':val===2?'c2':'c1';
+  var h='<div class="pips">';
+  for(var i=1;i<=5;i++) h+='<span class="pip '+(i<=val?cls:'')+'"></span>';
   return h+'</div>';
 }
-
-function growBar(v) {
-  const cls = v>=4?'gon-fast':v===3?'gon-mid':'gon-slow';
-  let b='<span class="gbar">';
-  for(let i=1;i<=5;i++) b+=`<span class="gb ${i<=v?cls:''}"></span>`;
-  return b+`</span><span class="glabel">${growLabels[v]}</span>`;
+function gbar(v){
+  var cls=v>=4?'gf':v===3?'gm':'gs';
+  var b='<span class="gbar">';
+  for(var i=1;i<=5;i++) b+='<span class="gb '+(i<=v?cls:'')+'"></span>';
+  return b+'</span><span class="gl">'+GR[v]+'</span>';
 }
+function pbCls(v){return v<=6?'pbf':v<=12?'pbm':'pbs';}
+function tCls(v){return v>=26?'th':v>=20?'tm':'tl';}
+function mcolor(v){return v>=15?'#1a7030':v>=8?'#7a5c1e':v>=5?'#9a6010':'#888888';}
 
-function pbCls(v){ return v<=6?'pb-fast':v<=12?'pb-mid':'pb-slow'; }
-function tCls(v){ return v>=26?'t-high':v>=20?'t-mid':'t-low'; }
-function multColor(v){ return v>=15?'var(--accent2)':v>=8?'var(--accent)':v>=5?'#b0a060':'var(--muted)'; }
-
-// MODAL
-function openModal(d, section) {
-  document.getElementById('modalTitle').textContent = d.name;
-  let body = '';
-
-  // mini stats bar
-  body += `<div class="modal-badge">
-    <span class="modal-price">Клон: ${d.price.toFixed(2).replace('.',',')} р.</span>
-    <span style="color:var(--muted);font-size:10px">·</span>
-    <span class="modal-market" style="color:var(--accent2)">Рынок BYN: ${d.mkt_byn.toLocaleString('ru')} р.</span>
-    <span style="color:var(--muted);font-size:10px">·</span>
-    <span class="modal-market" style="color:#6a9ab8">RUB: ${d.mkt_rub.toLocaleString('ru')} ₽</span>
-    <span style="color:var(--muted);font-size:10px">·</span>
-    <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:${multColor(d.mkt_mult)}">×${d.mkt_mult}</span>
-  </div>`;
-
-  const sections = [
-    {key:'cv', icon:'💡', title:'Ценность сорта'},
-    {key:'cg', icon:'🌱', title:'Темпы роста'},
-    {key:'cc', icon:'🌡', title:'Уход и сложности'},
-  ];
-
-  for(const s of sections) {
-    body += '<div class="modal-section">' +
-      '<div class="modal-section-title">' + s.icon + ' ' + s.title + '</div>' +
-      '<div class="modal-text">' + d[s.key] + '</div>' +
-      '</div>';
+// ── MODAL ──
+function openM(idx,sec){
+  var d=data[idx];
+  if(!d) return;
+  document.getElementById('mtitle').textContent=d.name;
+  var byn=d.mkt_byn.toLocaleString('ru');
+  var rub=d.mkt_rub.toLocaleString('ru');
+  var body='<div class="mbadge">'
+    +'<span style="color:#7a5c1e">Клон: '+d.price.toFixed(2).replace('.',',')+' р.</span>'
+    +'<span style="color:#1a6830">Рынок BYN: '+byn+' р.</span>'
+    +'<span style="color:#1a4880">RUB: '+rub+' ₽</span>'
+    +'<span style="color:'+mcolor(d.mkt_mult)+'">×'+d.mkt_mult+'</span>'
+    +'</div>';
+  var secs=[{k:'cv',i:'💡',t:'Ценность сорта'},{k:'cg',i:'🌱',t:'Темпы роста'},{k:'cc',i:'🌡',t:'Уход и сложности'}];
+  for(var s=0;s<secs.length;s++){
+    var ss=secs[s];
+    body+='<div class="msec"><div class="mstitle">'+ss.i+' '+ss.t+'</div><div class="mtext">'+d[ss.k]+'</div></div>';
   }
-
-  document.getElementById('modalBody').innerHTML = body;
-  document.getElementById('modalBg').classList.add('active');
+  document.getElementById('mbody').innerHTML=body;
+  document.getElementById('mbg').classList.add('on');
 }
+function closeM(){document.getElementById('mbg').classList.remove('on');}
+function closeMBg(e){if(e.target===document.getElementById('mbg')) closeM();}
+document.addEventListener('keydown',function(e){if(e.key==='Escape') closeM();});
 
-function closeModal(e){ if(e.target===document.getElementById('modalBg')) closeModalDirect(); }
-function closeModalDirect(){ document.getElementById('modalBg').classList.remove('active'); }
-document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeModalDirect(); });
-
-// SORT / FILTER
-let sortCol='total', sortDir='desc', searchText='', filterType='all';
+// ── STATE ──
+var sortCol='total',sortDir='desc',searchText='',filterType='all';
 
 function getSorted(){
-  let arr=[...data];
-  if(filterType==='variegated') arr=arr.filter(d=>/variegat|albo|aurea|mint|stardust|halfmoon|splash|multicolor|pink.*var|lava|snowflake/i.test(d.name));
-  else if(filterType==='species') arr=arr.filter(d=>!/variegat|albo|aurea|mint|stardust|halfmoon|splash|multicolor|lava|snowflake/i.test(d.name));
-  else if(filterType==='highprice') arr=arr.filter(d=>d.price>400);
-  else if(filterType==='budget') arr=arr.filter(d=>d.price<=100);
-  else if(filterType==='fastpayback') arr=arr.filter(d=>d.payback<=6);
-  if(searchText){ const q=searchText.toLowerCase(); arr=arr.filter(d=>d.name.toLowerCase().includes(q)); }
-  arr.sort((a,b)=>{
-    let va=a[sortCol], vb=b[sortCol];
-    if(typeof va==='string'){ va=va.toLowerCase(); vb=vb.toLowerCase(); return sortDir==='asc'?va.localeCompare(vb):vb.localeCompare(va); }
+  var arr=data.slice();
+  if(filterType==='variegated') arr=arr.filter(function(d){return /variegat|albo|aurea|mint|stardust|halfmoon|splash|multicolor|pink.*var|lava|snowflake/i.test(d.name);});
+  else if(filterType==='species') arr=arr.filter(function(d){return !/variegat|albo|aurea|mint|stardust|halfmoon|splash|multicolor|lava|snowflake/i.test(d.name);});
+  else if(filterType==='highprice') arr=arr.filter(function(d){return d.price>400;});
+  else if(filterType==='budget') arr=arr.filter(function(d){return d.price<=100;});
+  else if(filterType==='fastpayback') arr=arr.filter(function(d){return d.payback<=6;});
+  if(searchText){var q=searchText.toLowerCase();arr=arr.filter(function(d){return d.name.toLowerCase().indexOf(q)>=0;});}
+  arr.sort(function(a,b){
+    var va=a[sortCol],vb=b[sortCol];
+    if(typeof va==='string'){va=va.toLowerCase();vb=vb.toLowerCase();return sortDir==='asc'?(va<vb?-1:va>vb?1:0):(vb<va?-1:vb>va?1:0);}
     if(sortCol==='care'||sortCol==='payback') return sortDir==='desc'?va-vb:vb-va;
     return sortDir==='desc'?vb-va:va-vb;
   });
   if(filterType==='top20'){
-    const t20=new Set([...data].sort((a,b)=>b.total-a.total).slice(0,20).map(d=>d.num+'-'+d.name));
-    arr=arr.filter(d=>t20.has(d.num+'-'+d.name));
+    var ranked=data.slice().sort(function(a,b){return b.total-a.total;});
+    var t20={};
+    for(var i=0;i<20&&i<ranked.length;i++) t20[ranked[i].num+'|'+ranked[i].name]=true;
+    arr=arr.filter(function(d){return t20[d.num+'|'+d.name];});
   }
   return arr;
 }
 
+// ── RENDER ──
 function render(){
-  const arr=getSorted();
-  const tbody=document.getElementById('tbody');
+  var arr=getSorted();
   document.getElementById('countBadge').textContent=arr.length+' позиций';
-  document.getElementById('noResults').style.display=arr.length?'none':'block';
-  if(!arr.length){ tbody.innerHTML=''; return; }
+  document.getElementById('nores').style.display=arr.length?'none':'block';
+  var tbody=document.getElementById('tbody');
+  if(!arr.length){tbody.innerHTML='';return;}
 
-  const ranked=[...data].sort((a,b)=>b.total-a.total);
-  const rankMap=new Map(); ranked.forEach((d,i)=>rankMap.set(d.num+'-'+d.name,i+1));
+  var ranked=data.slice().sort(function(a,b){return b.total-a.total;});
+  var rankMap={};
+  for(var ri=0;ri<ranked.length;ri++) rankMap[ranked[ri].num+'|'+ranked[ri].name]=ri+1;
 
-  tbody.innerHTML=arr.map(d=>{
-    const rank=rankMap.get(d.num+'-'+d.name);
-    const rankCls=rank<=3?'rank-cell top3':rank<=10?'rank-cell top10':'rank-cell';
-    const rankStr=rank<=3?['🥇','🥈','🥉'][rank-1]:rank;
-    const mc=multColor(d.mkt_mult);
-    const idx=data.findIndex(x=>x.num===d.num && x.name===d.name);
+  var rows='';
+  for(var i=0;i<arr.length;i++){
+    var d=arr[i];
+    var rank=rankMap[d.num+'|'+d.name];
+    var rcls=rank<=3?'rc t3':rank<=10?'rc t10':'rc';
+    var rstr=rank<=3?['🥇','🥈','🥉'][rank-1]:rank;
+    var oidx=data.indexOf(d);
+    var mc=mcolor(d.mkt_mult);
+    rows+='<tr>'
+     +'<td class="'+rcls+'">'+rstr+'</td>'
+     +'<td class="nc">'+d.num+'</td>'
+     +'<td class="cname-td modal-trigger" data-idx="'+oidx+'" data-sec="cv"><span class="nm">'+d.name+'</span></td>'
+     +'<td class="pc">'+d.price.toFixed(2).replace('.',',')+' р.</td>'
+     +'<td class="sc sep">'+pips(d.value_ratio)+'<span class="sn">'+d.value_ratio+'/5</span></td>'
+     +'<td class="sc">'+pips(d.demand)+'<span class="sn">'+d.demand+'/5</span></td>'
+     +'<td class="sc">'+pips(d.rarity)+'<span class="sn">'+d.rarity+'/5</span></td>'
+     +'<td class="sc">'+pips(d.market_price)+'<span class="sn">'+d.market_price+'/5</span></td>'
+     +'<td class="bync sep">'+d.mkt_byn.toLocaleString('ru')+' р.</td>'
+     +'<td class="rubc">'+d.mkt_rub.toLocaleString('ru')+' ₽</td>'
+     +'<td class="mc" style="color:'+mc+'">×'+d.mkt_mult+'</td>'
+     +'<td class="sc sep">'+pips(d.roi)+'<span class="sn">'+d.roi+'/5</span></td>'
+     +'<td class="pbc '+pbCls(d.payback)+'">'+d.payback+' мес.</td>'
+     +'<td class="gcell modal-trigger sep" data-idx="'+oidx+'" data-sec="cg">'+gbar(d.growth)+'</td>'
+     +'<td class="sc"><span class="sbadge">'+SZ[d.size]+'</span></td>'
+     +'<td class="care-c modal-trigger" data-idx="'+oidx+'" data-sec="cc"><span class="cbadge cb'+d.care+'">'+CA[d.care]+'</span></td>'
+     +'<td class="tc '+tCls(d.total)+' sep">'+d.total+'<span style="font-size:9px;color:var(--tx-muted)">/30</span></td>'
+     +'</tr>';
+  }
+  tbody.innerHTML=rows;
 
-    return `<tr>
-<td class="${rankCls}">${rankStr}</td>
-<td class="num-cell">${d.num}</td>
-<td class="c-name-td modal-trigger" data-idx="${idx}" data-section="cv" title="Нажмите для описания">
-  <span class="name-text">${d.name}</span>
-</td>
-<td class="price-cell">${d.price.toFixed(2).replace('.',',')} р.</td>
-<td class="score-cell sep">${pips(d.value_ratio,'vr')}<span class="score-num">${d.value_ratio}/5</span></td>
-<td class="score-cell">${pips(d.demand,'dem')}<span class="score-num">${d.demand}/5</span></td>
-<td class="score-cell">${pips(d.rarity,'rar')}<span class="score-num">${d.rarity}/5</span></td>
-<td class="score-cell">${pips(d.market_price,'mkt')}<span class="score-num">${d.market_price}/5</span></td>
-<td class="mkt-byn-cell sep">${d.mkt_byn.toLocaleString('ru')} р.</td>
-<td class="mkt-rub-cell">${d.mkt_rub.toLocaleString('ru')} ₽</td>
-<td class="mult-cell" style="color:${mc}">×${d.mkt_mult}</td>
-<td class="score-cell sep">${pips(d.roi,'roi')}<span class="score-num">${d.roi}/5</span></td>
-<td class="pb-cell ${pbCls(d.payback)}" title="Срок окупаемости">${d.payback} мес.</td>
-<td class="growth-cell modal-trigger sep" data-idx="${idx}" data-section="cg" title="Нажмите для деталей роста">${growBar(d.growth)}</td>
-<td class="score-cell"><span class="size-badge">${sizeLabels[d.size]}</span></td>
-<td class="care-cell modal-trigger" data-idx="${idx}" data-section="cc" title="Нажмите для деталей ухода"><span class="care-badge care-${d.care}">${careLabels[d.care]}</span></td>
-<td class="total-cell ${tCls(d.total)} sep">${d.total}<span style="font-size:9px;color:var(--muted)">/30</span></td>
-</tr>`;
-  }).join('');
-
-  // update sort icons
-  document.querySelectorAll('thead th').forEach(th=>{
-    th.classList.remove('sorted');
-    const si=th.querySelector('.sort-icon'); if(si) si.textContent='↕';
-  });
-  const st=document.querySelector(`thead th[data-col="${sortCol}"]`);
-  if(st){ st.classList.add('sorted'); const si=st.querySelector('.sort-icon'); if(si) si.textContent=sortDir==='desc'?'↓':'↑'; }
+  var ths=document.querySelectorAll('thead th');
+  for(var t=0;t<ths.length;t++){
+    ths[t].classList.remove('sorted');
+    var si=ths[t].querySelector('.si');
+    if(si) si.textContent='↕';
+  }
+  var sth=document.querySelector('thead th[data-col="'+sortCol+'"]');
+  if(sth){sth.classList.add('sorted');var ssi=sth.querySelector('.si');if(ssi) ssi.textContent=sortDir==='desc'?'↓':'↑';}
 }
 
-
-document.getElementById('tbody').addEventListener('click', e => {
-  const trigger = e.target.closest('.modal-trigger');
-  if (!trigger) return;
-  const idx = parseInt(trigger.dataset.idx);
-  const section = trigger.dataset.section || 'cv';
-  if (!isNaN(idx) && data[idx]) openModal(data[idx], section);
+// ── DELEGATED EVENTS ──
+document.getElementById('tbody').addEventListener('click',function(e){
+  var t=e.target.closest('.modal-trigger');
+  if(!t) return;
+  var idx=parseInt(t.dataset.idx,10);
+  var sec=t.dataset.sec||'cv';
+  if(!isNaN(idx)) openM(idx,sec);
 });
-
-document.getElementById('sortCol').addEventListener('change',e=>{sortCol=e.target.value;render();});
-document.getElementById('sortDir').addEventListener('change',e=>{sortDir=e.target.value;render();});
-document.getElementById('search').addEventListener('input',e=>{searchText=e.target.value;render();});
-document.getElementById('filterType').addEventListener('change',e=>{filterType=e.target.value;render();});
-document.querySelectorAll('thead th[data-col]').forEach(th=>{
-  th.addEventListener('click',()=>{
-    const col=th.dataset.col; if(col==='rank') return;
-    if(sortCol===col){ sortDir=sortDir==='desc'?'asc':'desc'; }
-    else{ sortCol=col; sortDir=(col==='care'||col==='payback')?'asc':'desc'; }
-    document.getElementById('sortCol').value=sortCol;
-    document.getElementById('sortDir').value=sortDir;
-    render();
-  });
-});
+document.getElementById('sortCol').addEventListener('change',function(e){sortCol=e.target.value;render();});
+document.getElementById('sortDir').addEventListener('change',function(e){sortDir=e.target.value;render();});
+document.getElementById('search').addEventListener('input',function(e){searchText=e.target.value;render();});
+document.getElementById('filterType').addEventListener('change',function(e){filterType=e.target.value;render();});
+var hths=document.querySelectorAll('thead th[data-col]');
+for(var ti=0;ti<hths.length;ti++){
+  (function(th){
+    th.addEventListener('click',function(){
+      var col=th.dataset.col;
+      if(col==='rank') return;
+      if(sortCol===col){sortDir=sortDir==='desc'?'asc':'desc';}
+      else{sortCol=col;sortDir=(col==='care'||col==='payback')?'asc':'desc';}
+      document.getElementById('sortCol').value=sortCol;
+      document.getElementById('sortDir').value=sortDir;
+      render();
+    });
+  })(hths[ti]);
+}
 
 render();
 </script>
